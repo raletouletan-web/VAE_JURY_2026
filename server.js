@@ -207,35 +207,19 @@ app.get("/api/session", async (_req, res) => {
           "Content-Type": "application/json"
         },
 
-        body: JSON.stringify({
-
-          session: {
-
-            model: "gpt-4o-realtime-preview",
-
-            instructions: INSTRUCTIONS,
-
-            voice: "shimmer",
-
-            audio: {
-              input: {
-                turn_detection: {
-                  type: "server_vad",
-                  threshold: 0.5,
-                  prefix_padding_ms: 300,
-                  silence_duration_ms: 500,
-                  create_response: true,
-                  interrupt_response: true
-                }
-              }
-            }
-
-          }
-
-        })
-
-      }
-    );
+      body: JSON.stringify({
+  model: "gpt-4o-realtime-preview",
+  instructions: INSTRUCTIONS,
+  voice: "shimmer",
+  modalities: ["audio", "text"],
+  turn_detection: {
+    type: "server_vad",
+    threshold: 0.5,
+    prefix_padding_ms: 300,
+    silence_duration_ms: 500,
+    create_response: true
+  }
+});
 
     const data = await response.json();
 
