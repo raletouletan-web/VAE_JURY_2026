@@ -5,7 +5,7 @@
  *   PORT=8080
  */
 import dotenv from "dotenv";
-dotenv.config(); // Ne pas écraser les variables Railway
+dotenv.config();
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -39,14 +39,14 @@ Tu utilises des phrases courtes pour une meilleure compréhension orale.
 Tu évalues le candidat sur les 5 domaines d'activités (DA) et les 11 compétences officielles du DEAS :
 
 
-5 domaines de Compétences du métier d’aide soignants :
+5 domaines de Compétences du métier d'aide soignants :
 1.	DA1 : Accompagnement et soins de la personne dans les activités de sa vie quotidienne et de sa vie sociale en repérant les fragilités. Ce domaine se concentre sur l'aide aux actes essentiels, le respect du projet de vie, l'évaluation de l'autonomie et l'identification des risques de maltraitance ou de vulnérabilité.
 2.	DA2 : Appréciation de l'état clinique de la personne et mise en œuvre de soins adaptés en collaboration avec l'infirmier en intégrant la qualité et la prévention des risques. Il s'agit ici de l'observation de l'état général, de la mesure des paramètres vitaux, de l'évaluation de la douleur et de la réalisation de soins personnalisés en collaboration étroite avec l'infirmier.
 3.	DA3 : Information et accompagnement des personnes et de leur entourage, des professionnels et des apprenants. Ce domaine couvre l'accueil et la communication avec le patient et ses proches, ainsi que l'encadrement et la formation des pairs et des stagiaires.
 4.	DA4 : Entretien de l'environnement immédiat de la personne et des matériels liés aux activités de soins, au lieu et aux situations d'intervention. Cela inclut le nettoyage, la désinfection, la gestion des stocks (linge, dispositifs médicaux) et le repérage de toute anomalie ou dysfonctionnement du matériel.
 5.	DA5 : Transmission, quels que soient l'outil et les modalités de communication, des observations recueillies pour maintenir la continuité des soins et des activités. Ce dernier domaine concerne la traçabilité des soins, la hiérarchisation des informations et l'organisation du travail au sein d'une équipe pluriprofessionnelle pour garantir la sécurité et la qualité.
 
-Les 11 compétences essentielles du métier d’aides soignants
+Les 11 compétences essentielles du métier d'aides soignants
 Voici le détail de ces compétences par bloc :
 Bloc 1 : Accompagnement et soins de la personne dans les activités de sa vie quotidienne et sociale
 •	Compétence 1 : Accompagner les personnes dans les actes essentiels de la vie quotidienne et sociale, personnaliser cet accompagnement selon la situation et réajuster si nécessaire.
@@ -163,7 +163,9 @@ CONTRAINTES DE GÉNÉRATION :
 - Ne pas lister tous les domaines d'activité un par un
 - Ne pas utiliser de tableaux ni de codes couleur
 - Maximum 500 mots
-- Terminer par une phrase d'encouragement personnalisée7. FIN DE L'ENTRETIEN
+- Terminer par une phrase d'encouragement personnalisée
+
+7. FIN DE L'ENTRETIEN
 Après la synthèse, tu conclus formellement et tu termines l'entretien.
 Si le candidat souhaite passer à l'autre mode, tu relances avec de nouvelles questions adaptées (sans reprendre les questions déjà posées).
 Tu restes formel jusqu'au dernier mot.
@@ -171,58 +173,46 @@ Tu restes formel jusqu'au dernier mot.
 - AU terme de la synthèse démarrage de la minuterie`;
 
 console.log(
-"OPENAI KEY :",
-process.env.OPENAI_API_KEY
-? "TROUVEE"
-: "ABSENTE"
+  "OPENAI KEY :",
+  process.env.OPENAI_API_KEY ? "TROUVEE" : "ABSENTE"
 );
+console.log("PORT :", process.env.PORT);
 
-console.log(
-"PORT :",
-process.env.PORT
-);
 app.get("/api/session", async (_req, res) => {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
   if (!OPENAI_API_KEY) {
-    return res.status(500).json({
-      error: "OPENAI_API_KEY absente"
-    });
+    return res.status(500).json({ error: "OPENAI_API_KEY absente" });
   }
 
   try {
-
-    console.log(
-      "Clé détectée :",
-      OPENAI_API_KEY ? "OUI" : "NON"
-    );
+    console.log("Clé détectée :", OPENAI_API_KEY ? "OUI" : "NON");
 
     const response = await fetch(
       "https://api.openai.com/v1/realtime/client_secrets",
       {
         method: "POST",
-
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-
-      body: JSON.stringify({
-  model: "gpt-4o-realtime-preview",
-  instructions: INSTRUCTIONS,
-  voice: "shimmer",
-  modalities: ["audio", "text"],
-  turn_detection: {
-    type: "server_vad",
-    threshold: 0.5,
-    prefix_padding_ms: 300,
-    silence_duration_ms: 500,
-    create_response: true
-  }
-});
+        body: JSON.stringify({
+          model: "gpt-4o-realtime-preview",
+          instructions: INSTRUCTIONS,
+          voice: "shimmer",
+          modalities: ["audio", "text"],
+          turn_detection: {
+            type: "server_vad",
+            threshold: 0.5,
+            prefix_padding_ms: 300,
+            silence_duration_ms: 500,
+            create_response: true,
+          },
+        }),
+      }
+    );
 
     const data = await response.json();
-
     console.log("Réponse OpenAI :", data);
 
     if (!response.ok) {
@@ -230,18 +220,12 @@ app.get("/api/session", async (_req, res) => {
     }
 
     res.json(data);
-
-  } catch(err) {
-
+  } catch (err) {
     console.error(err);
-
-    res.status(500).json({
-      error: err.message
-    });
-
+    res.status(500).json({ error: err.message });
   }
-
 });
+
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
