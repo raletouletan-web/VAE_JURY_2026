@@ -258,3 +258,6 @@ app.get("/api/session", async (_req, res) => {
   }
 
 });
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
