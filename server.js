@@ -211,7 +211,7 @@ app.get("/api/session", async (_req, res) => {
 
           session: {
 
-            model: "gpt-realtime",
+            model: "gpt-4o-realtime-preview",
 
             instructions: INSTRUCTIONS,
 
