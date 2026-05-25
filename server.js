@@ -230,7 +230,7 @@ app.get("/{*splat}", (_req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Serveur démarré → http://localhost:${PORT}`);
   console.log(`   API session : GET http://localhost:${PORT}/api/session`);
 });
