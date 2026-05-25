@@ -4,8 +4,8 @@
  *   OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
  *   PORT=8080
  */
-import * as dotenv from "dotenv";
-dotenv.config({ override: false }); // Ne pas écraser les variables Railway
+import dotenv from "dotenv";
+dotenv.config(); // Ne pas écraser les variables Railway
 import express from "express";
 import cors from "cors";
 import path from "path";
