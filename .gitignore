@@ -1,0 +1,12 @@
+# Clé API et secrets — NE JAMAIS uploader
+.env
+
+# Dépendances — trop lourdes pour GitHub
+node_modules/
+
+# Build — généré automatiquement par Railway
+dist/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
