@@ -170,6 +170,17 @@ Tu restes formel jusqu'au dernier mot.
 
 - AU terme de la synthèse démarrage de la minuterie`;
 
+console.log(
+"OPENAI KEY :",
+process.env.OPENAI_API_KEY
+? "TROUVEE"
+: "ABSENTE"
+);
+
+console.log(
+"PORT :",
+process.env.PORT
+);
 app.get("/api/session", async (_req, res) => {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
