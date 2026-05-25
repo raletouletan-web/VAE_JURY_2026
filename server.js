@@ -2,7 +2,7 @@
  * server.js — Backend Express pour le Jury IA VAE Aide-Soignant
  * Variables d'environnement requises (.env) :
  *   OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
- *   PORT=3000
+ *   PORT=8080
  */
 import * as dotenv from "dotenv";
 dotenv.config({ override: false }); // Ne pas écraser les variables Railway
@@ -13,7 +13,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
