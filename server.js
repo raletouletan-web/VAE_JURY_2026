@@ -174,64 +174,76 @@ app.get("/api/session", async (_req, res) => {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
   if (!OPENAI_API_KEY) {
-    return res.status(500).json({ error: "OPENAI_API_KEY manquante dans .env" });
+    return res.status(500).json({
+      error: "OPENAI_API_KEY absente"
+    });
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        session: {
-          type: "realtime",
-          model: "gpt-realtime",
-          instructions: INSTRUCTIONS,
-          audio: {
-            input: {
-              turn_detection: {
-                type: "server_vad",
-                threshold: 0.5,
-                prefix_padding_ms: 300,
-                silence_duration_ms: 500,
-                create_response: true,
-                interrupt_response: true,
-              },
-            },
-            output: {
-              voice: "shimmer",
-            },
-          },
+
+    console.log(
+      "Clé détectée :",
+      OPENAI_API_KEY ? "OUI" : "NON"
+    );
+
+    const response = await fetch(
+      "https://api.openai.com/v1/realtime/client_secrets",
+      {
+        method: "POST",
+
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
         },
-      }),
-    });
+
+        body: JSON.stringify({
+
+          session: {
+
+            model: "gpt-realtime",
+
+            instructions: INSTRUCTIONS,
+
+            voice: "shimmer",
+
+            audio: {
+              input: {
+                turn_detection: {
+                  type: "server_vad",
+                  threshold: 0.5,
+                  prefix_padding_ms: 300,
+                  silence_duration_ms: 500,
+                  create_response: true,
+                  interrupt_response: true
+                }
+              }
+            }
+
+          }
+
+        })
+
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("Réponse OpenAI :", data);
 
     if (!response.ok) {
-      const body = await response.text();
-      console.error(`❌ OpenAI ${response.status}:`, body);
-      return res.status(response.status).json({
-        error: `OpenAI erreur ${response.status}`,
-        detail: body,
-      });
+      return res.status(response.status).json(data);
     }
 
-    const sessionData = await response.json();
-    console.log("✅ Session créée, token expire à :", sessionData.expires_at);
-    res.json(sessionData);
+    res.json(data);
 
-  } catch (err) {
-    console.error("❌ Erreur serveur:", err);
-    res.status(500).json({ error: "Erreur interne du serveur." });
+  } catch(err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
-});
 
-app.get("/{*splat}", (_req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Serveur démarré → http://localhost:${PORT}`);
-  console.log(`   API session : GET http://localhost:${PORT}/api/session`);
 });
